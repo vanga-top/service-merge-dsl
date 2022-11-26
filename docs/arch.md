@@ -45,14 +45,42 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 eureka.serviceUrls=[]
 ```
 
-### 配置服务空间和服务
+### 配置服务空间
 
 这里的未来是需要有控制台可以在页面上进行操作
 
 ```conf
-## 配置服务空间
+# 配置服务空间
 
 dsl.service.app = test.app
 dls.service.app.
+
+```
+
+
+### 配置服务
+```conf
+
+# 模式一，完全自定义返回格式，然后通过接口调用赋值
+
+# rpc调用 适用于dubbo grpc等，这里需要支持泛化调用
+let result = $appName.$serviceName$version$ItemService.queryItem($itemId)
+
+# http接口
+let hResult = $url?itemId=$itemId
+
+
+{
+    "code" : 1000,
+    "msg": "success",
+    "result" : {
+        "total" : $hResult.total,
+        "item" : {
+            "id" : $hResult.id,
+            "title" : $hResult.title,
+        }
+    }
+}
+
 
 ```
