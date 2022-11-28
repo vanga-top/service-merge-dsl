@@ -83,4 +83,22 @@ let hResult = $url?itemId=$itemId
 }
 
 
+# 模式二， 在原有的数据结构上，增加或者修改一些字段
+
 ```
+
+
+## 应用架构说明
+
+layer1: app:ios & android & web
+
+layer2: gateway
+
+    layer2.1: service-merge-dsl
+
+layer3: micro service    
+
+
+
+service-merge-dsl主要会放在网关层，作为无状态的服务，连接网关和底层服务之间的调用，把网关原本透传到底层的服务做一层拦截，实现数据的拼接和
+
