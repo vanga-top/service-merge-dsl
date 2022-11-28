@@ -45,14 +45,60 @@ eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
 eureka.serviceUrls=[]
 ```
 
-### 配置服务空间和服务
+### 配置服务空间
 
 这里的未来是需要有控制台可以在页面上进行操作
 
 ```conf
-## 配置服务空间
+# 配置服务空间
 
 dsl.service.app = test.app
 dls.service.app.
 
 ```
+
+
+### 配置服务
+```conf
+
+# 模式一，完全自定义返回格式，然后通过接口调用赋值
+
+# rpc调用 适用于dubbo grpc等，这里需要支持泛化调用
+let result = $appName.$serviceName$version$ItemService.queryItem($itemId)
+
+# http接口
+let hResult = $url?itemId=$itemId
+
+
+{
+    "code" : 1000,
+    "msg": "success",
+    "result" : {
+        "total" : $hResult.total,
+        "item" : {
+            "id" : $hResult.id,
+            "title" : $hResult.title,
+        }
+    }
+}
+
+
+# 模式二， 在原有的数据结构上，增加或者修改一些字段
+
+```
+
+
+## 应用架构说明
+
+layer1: app:ios & android & web
+
+layer2: gateway
+
+    layer2.1: service-merge-dsl
+
+layer3: micro service    
+
+
+
+service-merge-dsl主要会放在网关层，作为无状态的服务，连接网关和底层服务之间的调用，把网关原本透传到底层的服务做一层拦截，实现数据的拼接和
+
