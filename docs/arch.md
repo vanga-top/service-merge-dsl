@@ -102,3 +102,10 @@ layer3: micro service
 
 service-merge-dsl主要会放在网关层，作为无状态的服务，连接网关和底层服务之间的调用，把网关原本透传到底层的服务做一层拦截，实现数据的拼接和
 
+micro service和dsl层的对接需要依赖一些基础的能力：
+
+1、同一套服务发现
+
+2、服务泛化调用
+
+实现上计划先打通spring cloud（http模式）和gPRC这两个通用体系
