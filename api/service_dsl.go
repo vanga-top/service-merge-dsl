@@ -1,5 +1,6 @@
 package api
 
 type ServiceDSL interface {
-	Call()
+	// Call remote rpc call
+	Merge([]interface{}) interface{}
 }
