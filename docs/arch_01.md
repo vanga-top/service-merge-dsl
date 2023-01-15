@@ -11,6 +11,7 @@ merge-dsl:
   application:
     name:application-name
     group-id:service.group.1
+    port:8080
   slb:
     host:http://106.14.167.79:8761/eureka/ #这个slb和微服务的服务发现地址一致
     interval:30  #心跳间隔时间 单位s
@@ -22,6 +23,10 @@ merge-dsl:
 
 #### application
 
+
+```go
+
+```
 
 
 #### slb-client
@@ -72,6 +77,12 @@ go app -c application.yaml
 * 采用config文件配置
 * 直接调用api进行配置
 
+
+2、采用config文件配置的方式
+
+```config
+    
+```
 
 ### 服务调用
 
