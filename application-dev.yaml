@@ -1,0 +1,11 @@
+env: dev
+application:
+  name: application-name
+  group-id: service.group.1
+  port: 8080
+slb:
+  host: http://106.14.167.79:8761/eureka/ #这个slb和微服务的服务发现地址一致
+  interval: 30  #心跳间隔时间 单位s
+log:
+  level: debug
+  path: /usr/local/dsl/dev.log

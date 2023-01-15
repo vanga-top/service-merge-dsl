@@ -1,4 +1,4 @@
-package api
+package slb
 
 // SLBClient Service Load Balance Client
 type SLBClient interface {

@@ -7,22 +7,27 @@
 服务基础信息包含：应用分组名、应用名、保活信息等
 
 ```yaml
-merge-dsl:
-  application:
-    name:application-name
-    group-id:service.group.1
-    port:8080
-  slb:
-    host:http://106.14.167.79:8761/eureka/ #这个slb和微服务的服务发现地址一致
-    interval:30  #心跳间隔时间 单位s
-  log:
-    level:debug
+env: dev
+application:
+  name: application-name
+  group-id: service.group.1
+  port: 8080
+slb:
+  host: http://106.14.167.79:8761/eureka/ #这个slb和微服务的服务发现地址一致
+  interval: 30  #心跳间隔时间 单位s
+log:
+  level: debug
+  path: /usr/local/dsl/dev.log
 ```
 
 相关设计：
 
 #### application
 
+涉及到几个模块
+* config 用于yaml配置的解析
+* instance 用于管理应用实例生命周期（start、stop、restart、pause）
+* plug-in 组件管理，用于增加一些插件
 
 ```go
 
