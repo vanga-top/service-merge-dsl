@@ -1,7 +1,7 @@
 package eureka
 
 import (
-	"dsl/slb"
+	"dsl/plugins/slb"
 	"strconv"
 )
 import "github.com/SimonWang00/goeureka"

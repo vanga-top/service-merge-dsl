@@ -1,4 +1,4 @@
-## how to use
+## How to use
 
 ### 启动service-merge-dsl服务
 
@@ -29,7 +29,36 @@ log:
 * instance 用于管理应用实例生命周期（start、stop、restart、pause）
 * plug-in 组件管理，用于增加一些插件
 
+1、config 相关 config 会放在api目录下，可以供外部使用，内部instance使用需要转换
 ```go
+
+// ApplicationConfig is used for load application.yaml
+type ApplicationConfig struct {
+    Env                 string `yaml:"env"` // dev test prod
+    ApplicationFragment `yaml:"application"`
+    SLBFragments        SLBFragment `yaml:"slb"`
+    LogFragment         `yaml:"log"`
+}
+
+type ApplicationFragment struct {
+    Name    string `yaml:"name"`     // can be null
+    GroupID string `yaml:"group-id"` // cannot be null
+    Port    int    `yaml:"port"`
+}
+
+type SLBFragment struct {
+    Host      string `yaml:"host"`
+    Namespace string `yaml:"namespace"`
+    Username  string `yaml:"username"`
+    Password  string `yaml:"password"`
+    Token     string `yaml:"token"`
+    Interval  int    `yaml:"interval"`
+}
+
+type LogFragment struct {
+    Level string `yaml:"level"`
+    Path  string `yaml:"path"` // log file path
+}
 
 ```
 
