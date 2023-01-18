@@ -13,7 +13,7 @@ type Config struct {
 }
 
 type InstanceCtx struct {
-	config *Config
+	Config *Config
 	context.Context
 }
 
@@ -21,7 +21,7 @@ type Instance interface {
 	LoadPlugin(plugin plugins.Plugin, initImmediately bool) error
 	ListPlugins() []plugins.Plugin
 	RemovePlugin(pluginID string) error
-	Start(ctx *InstanceCtx)
-	Stop(ctx *InstanceCtx)
-	Restart(netCtx *InstanceCtx)
+	Start(ctx *InstanceCtx) error
+	Stop(ctx *InstanceCtx) error
+	Restart(netCtx *InstanceCtx) error
 }

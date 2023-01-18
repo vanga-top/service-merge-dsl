@@ -7,10 +7,10 @@ import (
 
 // ApplicationConfig is used for load application.yaml
 type ApplicationConfig struct {
-	Env                 string `yaml:"env"` // dev test prod
-	ApplicationFragment `yaml:"application"`
-	SLBFragments        SLBFragment `yaml:"slb"`
-	LogFragment         `yaml:"log"`
+	Env                  string `yaml:"env"` // dev test prod
+	*ApplicationFragment `yaml:"application"`
+	SLBFragments         *SLBFragment `yaml:"slb"`
+	*LogFragment         `yaml:"log"`
 }
 
 type ApplicationFragment struct {
