@@ -13,6 +13,7 @@ const (
 // Plugin for instance's plugins
 type Plugin interface {
 	ID() string
+	Name() string
 	Init() error
 	Status() Status
 }

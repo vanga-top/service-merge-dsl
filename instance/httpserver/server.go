@@ -5,6 +5,7 @@ import (
 	"dsl/instance"
 	"dsl/plugins"
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -15,7 +16,7 @@ type Server struct {
 	Env     string
 	Port    int
 	Plugins []plugins.Plugin
-	sync.Mutex
+	Lock    sync.Mutex
 }
 
 func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
@@ -30,14 +31,17 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 	}
 	//load plugin
 	if appConfig.SLBFragments != nil {
-
+		//server.LoadPlugin()
 	}
 
-	//server.LoadPlugin()
 	return server, nil
 }
 
 func (s *Server) ListPlugins() []plugins.Plugin {
+	fmt.Println("--------list all registered plugins--------")
+	for i, v := range s.Plugins {
+		fmt.Printf("%d. PluginID:%s  Plugin-Name:%s \n", i, v.ID(), v.Name())
+	}
 	return s.Plugins
 }
 
