@@ -5,6 +5,16 @@ import (
 	"dsl/plugins"
 )
 
+type InstanceStatus int
+
+const (
+	CREATED InstanceStatus = iota
+	INITED
+	RUNNING
+	STOP
+	DESTROY
+)
+
 type Config struct {
 	Env     string
 	Name    string
@@ -24,4 +34,5 @@ type Instance interface {
 	Start(ctx *InstanceCtx) error
 	Stop(ctx *InstanceCtx) error
 	Restart(netCtx *InstanceCtx) error
+	Status() InstanceStatus
 }

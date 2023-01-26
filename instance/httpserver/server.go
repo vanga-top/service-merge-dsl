@@ -6,6 +6,7 @@ import (
 	"dsl/plugins"
 	"errors"
 	"fmt"
+	"net/http"
 	"sync"
 )
 
@@ -16,7 +17,13 @@ type Server struct {
 	Env     string
 	Port    int
 	Plugins []plugins.Plugin
-	Lock    sync.Mutex
+	Lock    *sync.Mutex
+	Stat    instance.InstanceStatus
+	Ch      chan int
+}
+
+func (s *Server) Status() instance.InstanceStatus {
+	return s.Stat
 }
 
 func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
@@ -28,6 +35,7 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 		Name: appConfig.Name,
 		Port: appConfig.Port,
 		Env:  appConfig.Env,
+		Ch:   make(chan int),
 	}
 	//load plugin
 	if appConfig.SLBFragments != nil {
@@ -77,7 +85,13 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 	if ctx == nil || ctx.Config == nil {
 		return errors.New("ctx or ctx.config is nil")
 	}
+	http.HandleFunc("/", indexHandler)
+	go http.ListenAndServe(":8000", nil)
 	return nil
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "hello world")
 }
 
 func (s *Server) Stop(ctx *instance.InstanceCtx) error {
