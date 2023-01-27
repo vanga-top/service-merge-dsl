@@ -19,7 +19,12 @@ type Server struct {
 	Plugins []plugins.Plugin
 	Lock    *sync.Mutex
 	Stat    instance.InstanceStatus
-	Ch      chan int
+	// wg is used to wait for all servers to shut down
+	wg *sync.WaitGroup
+}
+
+func (s *Server) Wait() {
+	s.wg.Wait()
 }
 
 func (s *Server) Status() instance.InstanceStatus {
@@ -35,7 +40,7 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 		Name: appConfig.Name,
 		Port: appConfig.Port,
 		Env:  appConfig.Env,
-		Ch:   make(chan int),
+		wg:   new(sync.WaitGroup),
 	}
 	//load plugin
 	if appConfig.SLBFragments != nil {
@@ -85,8 +90,13 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 	if ctx == nil || ctx.Config == nil {
 		return errors.New("ctx or ctx.config is nil")
 	}
+	if s.Stat == instance.RUNNING {
+		return errors.New("server has been run already")
+	}
 	http.HandleFunc("/", indexHandler)
 	go http.ListenAndServe(":8000", nil)
+	//add instance
+	s.wg.Add(1)
 	return nil
 }
 

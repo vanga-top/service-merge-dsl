@@ -19,5 +19,5 @@ func main() {
 	fmt.Println("start server...")
 	server.ListPlugins()
 	//todo add signal discovery
-	server.Ch <- 1
+	server.Wait()
 }
