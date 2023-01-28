@@ -93,20 +93,21 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 	if s.Stat == instance.RUNNING {
 		return errors.New("server has been run already")
 	}
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/*", s.handler)
 	go http.ListenAndServe(":8000", nil)
 	//add instance
 	s.wg.Add(1)
 	return nil
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+// handle all request
+func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello world")
 }
 
 func (s *Server) Stop(ctx *instance.InstanceCtx) error {
-	//TODO implement me
-	panic("implement me")
+	s.wg.Done()
+	return nil
 }
 
 func (s *Server) Restart(netCtx *instance.InstanceCtx) error {
