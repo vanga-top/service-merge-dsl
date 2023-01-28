@@ -45,7 +45,13 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 	}
 	//load plugin
 	if appConfig.SLBFragments != nil {
-		slbClient := &eureka.EurekaClient{ClientID: "eureka-client"}
+		slbClient := &eureka.EurekaClient{
+			ClientName:   "eureka-dsl-client",
+			ClientID:     "eureka-client",
+			InstanceName: appConfig.ApplicationFragment.Name,
+			Port:         appConfig.ApplicationFragment.Port,
+			URL:          appConfig.SLBFragments.Host,
+		}
 		server.LoadPlugin(slbClient, true)
 	}
 
@@ -108,7 +114,13 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Stop(ctx *instance.InstanceCtx) error {
-	s.wg.Done()
+	defer s.wg.Done()
+	for _, plugin := range s.Plugins {
+		err := plugin.Destroy()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

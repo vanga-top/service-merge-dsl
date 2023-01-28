@@ -21,6 +21,7 @@ type ApplicationFragment struct {
 
 type SLBFragment struct {
 	Host      string `yaml:"host"`
+	Port      int    `yaml:"port"`
 	Namespace string `yaml:"namespace"`
 	Username  string `yaml:"username"`
 	Password  string `yaml:"password"`

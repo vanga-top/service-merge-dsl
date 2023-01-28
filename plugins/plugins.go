@@ -16,4 +16,5 @@ type Plugin interface {
 	Name() string
 	Init() error
 	Status() Status
+	Destroy() error
 }
