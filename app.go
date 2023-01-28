@@ -7,17 +7,23 @@ import (
 	"fmt"
 )
 
+var serverInstance *httpserver.Server
+
+func init() {
+	TrapSignals()
+}
+
 func main() {
 
 	appConfig, err := config.ApplicationYamlParser("/Users/chenhui/code/service-merge-dsl/application-dev.yaml")
 	if err != nil {
 		panic(err)
 	}
-	server, err := httpserver.NewServer(appConfig)
+	serverInstance, err := httpserver.NewServer(appConfig)
 	ctx := &instance.InstanceCtx{Config: &instance.Config{Env: "DEV"}}
-	server.Start(ctx)
+	serverInstance.Start(ctx)
 	fmt.Println("start server...")
-	server.ListPlugins()
+	serverInstance.ListPlugins()
 	//todo add signal discovery
-	server.Wait()
+	serverInstance.Wait()
 }
