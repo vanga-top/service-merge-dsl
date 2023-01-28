@@ -1,7 +1,10 @@
 package slb
 
+import "dsl/plugins"
+
 // SLBClient Service Load Balance Client
 type SLBClient interface {
+	plugins.Plugin
 	Connect(url string, port int, namespace string, opts *SLBOptions) *SLBResult
 	DisConnect() *SLBResult
 }

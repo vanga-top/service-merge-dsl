@@ -4,6 +4,7 @@ import (
 	"dsl/api/config"
 	"dsl/instance"
 	"dsl/plugins"
+	"dsl/plugins/slb/eureka"
 	"errors"
 	"fmt"
 	"net/http"
@@ -44,7 +45,8 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 	}
 	//load plugin
 	if appConfig.SLBFragments != nil {
-		//server.LoadPlugin()
+		slbClient := &eureka.EurekaClient{ClientID: "eureka-client"}
+		server.LoadPlugin(slbClient, true)
 	}
 
 	return server, nil
