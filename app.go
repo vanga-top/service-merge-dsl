@@ -14,7 +14,6 @@ func init() {
 }
 
 func main() {
-
 	appConfig, err := config.ApplicationYamlParser("/Users/chenhui/code/service-merge-dsl/application-dev.yaml")
 	if err != nil {
 		panic(err)

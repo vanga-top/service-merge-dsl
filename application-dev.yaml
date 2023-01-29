@@ -1,6 +1,6 @@
 env: dev
 application:
-  name: application-name
+  name: dsl-service-app
   group-id: service.group.1
   port: 8000
 slb:

@@ -41,13 +41,8 @@ func trapSignalsCrossPlatform() {
 
 		for i := 0; true; i++ {
 			<-shutdown
-
-			if i > 0 {
-				fmt.Println("[INFO] SIGINT: Force quit")
-				serverInstance.Stop(nil)
-				os.Exit(2)
-			}
 			fmt.Println("[INFO] SIGINT: Shutting down")
+			//serverInstance.Stop(nil)
 		}
 	}()
 }

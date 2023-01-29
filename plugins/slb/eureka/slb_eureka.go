@@ -55,5 +55,6 @@ func (e *EurekaClient) Connect(url string, port int, appName string, opts *slb.S
 }
 
 func (e *EurekaClient) DisConnect() *slb.SLBResult {
+	// todo 缺少主动断开的逻辑
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"dsl/plugins/slb/eureka"
 	"errors"
 	"fmt"
+	"github.com/SimonWang00/goeureka"
 	"net/http"
 	"sync"
 )
@@ -101,7 +102,7 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 	if s.Stat == instance.RUNNING {
 		return errors.New("server has been run already")
 	}
-	http.HandleFunc("/*", s.handler)
+	http.HandleFunc("/", s.handler)
 	go http.ListenAndServe(":8000", nil)
 	//add instance
 	s.wg.Add(1)
@@ -110,7 +111,25 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 
 // handle all request
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello world")
+	s1, s2, err := goeureka.GetInfoWithappName(s.Name)
+	if err != nil {
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	fmt.Fprintf(w, "local: "+s1+"\r\n register time:"+s2+"\r\n")
+	applications, err2 := goeureka.GetServices()
+	if err2 != nil {
+		fmt.Fprintf(w, err2.Error())
+		return
+	}
+
+	fmt.Fprintf(w, "register consumer:\r\n")
+	for _, app := range applications {
+		for _, ins := range app.Instance {
+			fmt.Fprintf(w, "app:%s, ip:%s \r\n", ins.App, ins.IpAddr)
+		}
+	}
+
 }
 
 func (s *Server) Stop(ctx *instance.InstanceCtx) error {
