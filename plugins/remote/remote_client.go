@@ -4,6 +4,6 @@ import "dsl/plugins"
 
 // remote caller
 
-type RemoteCall interface {
+type RemoteClient interface {
 	plugins.Plugin
 }
