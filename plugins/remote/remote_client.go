@@ -6,4 +6,5 @@ import "dsl/plugins"
 
 type RemoteClient interface {
 	plugins.Plugin
+	Call(serviceName, version, method string, params *RemoteParams) *RemoteResult
 }
