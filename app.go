@@ -24,5 +24,7 @@ func main() {
 	fmt.Println("start server...")
 	serverInstance.ListPlugins()
 	//todo add signal discovery
+
+	//
 	serverInstance.Wait()
 }

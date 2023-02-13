@@ -1,7 +1,15 @@
 package dsl
 
-import "dsl/plugins"
+import (
+	"dsl/api/dsl"
+	"dsl/plugins"
+)
 
-type DSLClient interface {
+type DSLClient struct {
 	plugins.Plugin
+}
+
+func (client *DSLClient) Merge(request *dsl.Request) *dsl.Result {
+	//TODO implement me
+	panic("implement me")
 }

@@ -11,6 +11,7 @@ type ApplicationConfig struct {
 	*ApplicationFragment `yaml:"application"`
 	SLBFragments         *SLBFragment `yaml:"slb"`
 	*LogFragment         `yaml:"log"`
+	*DSLFragment         `yaml:"dsl"`
 }
 
 type ApplicationFragment struct {
@@ -32,6 +33,10 @@ type SLBFragment struct {
 type LogFragment struct {
 	Level string `yaml:"level"`
 	Path  string `yaml:"path"` // log file path
+}
+
+type DSLFragment struct {
+	FilePath string `yaml:"filePath"` // load dsl file path
 }
 
 // ApplicationYamlParser  func to parse app yaml
