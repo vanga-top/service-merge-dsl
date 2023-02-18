@@ -19,6 +19,21 @@ func Run(ctx context.Context, network, address string) error {
 	}()
 
 	s := grpc.NewServer()
+	RegisterGreeterServer(s, new(EchoServer))
 	s.GetServiceInfo()
+
 	return nil
+}
+
+type EchoServer struct {
+}
+
+func (e EchoServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (e EchoServer) mustEmbedUnimplementedGreeterServer() {
+	//TODO implement me
+	panic("implement me")
 }
