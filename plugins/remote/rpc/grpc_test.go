@@ -22,7 +22,11 @@ func Run(ctx context.Context, network, address string) error {
 	RegisterGreeterServer(s, new(EchoServer))
 	s.GetServiceInfo()
 
-	return nil
+	go func() {
+		defer s.GracefulStop()
+		<-ctx.Done()
+	}()
+	return s.Serve(l)
 }
 
 type EchoServer struct {
