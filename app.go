@@ -4,12 +4,18 @@ import (
 	"dsl/api/config"
 	"dsl/instance"
 	"dsl/instance/httpserver"
+	"flag"
 	"fmt"
 )
 
 var serverInstance *httpserver.Server
 
+var (
+	addr = flag.String("addr", ":9090", "endPoint of service ports")
+)
+
 func init() {
+	flag.Parse()
 	TrapSignals()
 }
 

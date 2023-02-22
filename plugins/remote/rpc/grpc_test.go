@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/runtime/protoimpl"
 	"net"
 )
 
@@ -33,11 +34,15 @@ type EchoServer struct {
 }
 
 func (e EchoServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
-	//TODO implement me
-	panic("implement me")
+	result := &HelloReply{
+		state:         protoimpl.MessageState{},
+		sizeCache:     0,
+		unknownFields: nil,
+		Message:       "",
+	}
+	return result, nil
 }
 
 func (e EchoServer) mustEmbedUnimplementedGreeterServer() {
-	//TODO implement me
-	panic("implement me")
+	//todo
 }
