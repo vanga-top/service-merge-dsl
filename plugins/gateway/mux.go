@@ -11,6 +11,7 @@ type ServerMux struct {
 	// handlers maps HTTP method to a list of handlers.
 	handlers               map[string][]handler
 	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
+	marshalers             marshalerRegistry
 }
 
 type handler struct {
