@@ -5,6 +5,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"io"
+	"reflect"
 )
 
 type JSONPb struct {
@@ -23,6 +24,11 @@ func (j *JSONPb) Marshal(v interface{}) ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
+
+var (
+	// protoMessageType is stored to prevent constant lookup of the same type at runtime.
+	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+)
 
 func (j *JSONPb) Unmarshal(data []byte, v interface{}) error {
 	//TODO implement me
