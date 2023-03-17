@@ -14,13 +14,14 @@ import (
 
 // Server implements for Instance
 type Server struct {
-	Ctx     *instance.InstanceCtx
-	Name    string
-	Env     string
-	Port    int
-	Plugins []plugins.Plugin
-	Lock    *sync.Mutex
-	Stat    instance.InstanceStatus
+	AppConfig *config.ApplicationConfig //init config application.yaml
+	Ctx       *instance.InstanceCtx
+	Name      string
+	Env       string
+	Port      int
+	Plugins   []plugins.Plugin
+	Lock      *sync.Mutex
+	Stat      instance.InstanceStatus
 	// wg is used to wait for all servers to shut down
 	wg *sync.WaitGroup
 }
@@ -39,24 +40,28 @@ func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
 	}
 	//struct server
 	server := &Server{
-		Name: appConfig.Name,
-		Port: appConfig.Port,
-		Env:  appConfig.Env,
-		wg:   new(sync.WaitGroup),
+		Name:      appConfig.Name,
+		Port:      appConfig.Port,
+		Env:       appConfig.Env,
+		wg:        new(sync.WaitGroup),
+		AppConfig: appConfig,
 	}
+	server.parserAppConfig(true)
+	return server, nil
+}
+
+func (s *Server) parserAppConfig(initImmediately bool) {
 	//load plugin
-	if appConfig.SLBFragments != nil {
+	if s.AppConfig.SLBFragments != nil {
 		slbClient := &eureka.EurekaClient{
 			ClientName:   "eureka-dsl-client",
 			ClientID:     "eureka-client",
-			InstanceName: appConfig.ApplicationFragment.Name,
-			Port:         appConfig.ApplicationFragment.Port,
-			URL:          appConfig.SLBFragments.Host,
+			InstanceName: s.AppConfig.ApplicationFragment.Name,
+			Port:         s.AppConfig.ApplicationFragment.Port,
+			URL:          s.AppConfig.SLBFragments.Host,
 		}
-		server.LoadPlugin(slbClient, true)
+		s.LoadPlugin(slbClient, initImmediately)
 	}
-
-	return server, nil
 }
 
 func (s *Server) ListPlugins() []plugins.Plugin {
