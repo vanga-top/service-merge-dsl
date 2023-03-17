@@ -10,3 +10,5 @@ slb:
 log:
   level: debug
   path: /usr/local/dsl/dev.log
+remote:
+  host: http://127.0.0.1
