@@ -1,4 +1,4 @@
-package remote
+package gateway
 
 // Router for http to remote call
 type Router interface {

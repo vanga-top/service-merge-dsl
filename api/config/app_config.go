@@ -39,6 +39,14 @@ type DSLFragment struct {
 	FilePath string `yaml:"filePath"` // load dsl file path
 }
 
+type GatewayFragment struct {
+	Protocol string `yaml:"protocol"` // protocol h1.1  h2  h2c  quic  h3
+}
+
+// ThreadPartFragment 三方插件扩展接口
+type ThreadPartFragment interface {
+}
+
 // ApplicationYamlParser  func to parse app yaml
 func ApplicationYamlParser(path string) (*ApplicationConfig, error) {
 	if "" == path { // todo for path search

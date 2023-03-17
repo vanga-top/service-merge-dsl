@@ -18,3 +18,12 @@ type Plugin interface {
 	Status() Status
 	Destroy() error
 }
+
+/**
+ 	process schedule
+
+	1、http request comes in
+    2、gateway to parse http request --》 uri  to  service
+    3、call remote call to get remote result
+	4、call dsl to merge
+*/

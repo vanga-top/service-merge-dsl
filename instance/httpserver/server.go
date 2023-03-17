@@ -107,6 +107,8 @@ func (s *Server) Start(ctx *instance.InstanceCtx) error {
 	if s.Stat == instance.RUNNING {
 		return errors.New("server has been run already")
 	}
+
+	//todo 引入gateway作为入口
 	http.HandleFunc("/", s.handler)
 	go http.ListenAndServe(":8000", nil)
 	//add instance
