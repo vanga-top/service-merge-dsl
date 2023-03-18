@@ -54,7 +54,20 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 	return nil, nil
 }
 
-func (j *JSONPb) marshalTo(b *bytes.Buffer, v interface{}) error {
-
-	return nil
+func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
+	p, ok := v.(proto.Message)
+	if !ok {
+		buf, err := j.marshalNonProtoField(v)
+		if err != nil {
+			return err
+		}
+		_, err = w.Write(buf)
+		return err
+	}
+	b, err := j.MarshalOptions.Marshal(p)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(b)
+	return err
 }
