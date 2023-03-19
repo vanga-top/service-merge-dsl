@@ -56,4 +56,28 @@ http request（URI） --> gateway (router 1URI to 1DSL service) --> dsl call rem
 
 ### 想要怎么样的扩展能力？
 
-还是先从用户怎么用dsl的能力开始设计，之前想过两种方式，
+还是先从用户怎么用dsl的能力开始设计，之前想过两种方式，一种是直接api调用的方式，另一种是通过配置文件，本质上都是一种方式，交互形式不一样而已。
+
+核心是上述流程的dsl化：
+
+http request（URI） --> gateway (router 1URI to 1DSL service) --> dsl call remote --> dsl processor --> response
+
+我们可以尝试着这样来表达
+
+```
+     "get|post"  /v1/echo/$message {
+       option(rpc) = {
+          EchoService($message) returns ($SimpleMessage)
+       },
+       option(dsl) = {
+          remote($result)   appName#serviceName#method($message.id);
+          remote($result1)  appName#serviceName#method($message.value);
+          dsl(($result,$result1)=>{
+               $SimpleMessage:{
+                  "id": $result.id,
+                  "name": $result1.name
+               }
+          })
+       }
+    }
+```
