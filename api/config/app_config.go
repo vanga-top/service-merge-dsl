@@ -12,6 +12,7 @@ type ApplicationConfig struct {
 	SLBFragments         *SLBFragment `yaml:"slb"`
 	*LogFragment         `yaml:"log"`
 	*DSLFragment         `yaml:"dsl"`
+	*GatewayFragment     `yaml:"gateway"`
 }
 
 type ApplicationFragment struct {
@@ -40,7 +41,10 @@ type DSLFragment struct {
 }
 
 type GatewayFragment struct {
-	Protocol string `yaml:"protocol"` // protocol h1.1  h2  h2c  quic  h3
+	Protocol   string `yaml:"protocol"` // protocol h1.1  h2  h2c  quic  h3
+	Port       string `yaml:"port"`
+	RPCNetwork string `yaml:"rpc-network"`
+	RPCAddr    string `yaml:"rpc-addr"`
 }
 
 // ThreadPartFragment 三方插件扩展接口

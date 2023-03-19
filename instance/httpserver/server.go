@@ -4,6 +4,7 @@ import (
 	"dsl/api/config"
 	"dsl/instance"
 	"dsl/plugins"
+	"dsl/plugins/gateway"
 	"dsl/plugins/slb/eureka"
 	"errors"
 	"fmt"
@@ -34,19 +35,20 @@ func (s *Server) Status() instance.InstanceStatus {
 	return s.Stat
 }
 
-func NewServer(appConfig *config.ApplicationConfig) (*Server, error) {
+func NewServer(appConfig *config.ApplicationConfig, ctx *instance.InstanceCtx, initImmediately bool) (*Server, error) {
 	if appConfig == nil {
 		return nil, errors.New("application config is nil")
 	}
 	//struct server
 	server := &Server{
-		Name:      appConfig.Name,
-		Port:      appConfig.Port,
+		Name:      appConfig.ApplicationFragment.Name,
+		Port:      appConfig.ApplicationFragment.Port,
 		Env:       appConfig.Env,
 		wg:        new(sync.WaitGroup),
 		AppConfig: appConfig,
+		Ctx:       ctx,
 	}
-	server.parserAppConfig(true)
+	server.parserAppConfig(initImmediately)
 	return server, nil
 }
 
@@ -62,6 +64,27 @@ func (s *Server) parserAppConfig(initImmediately bool) {
 		}
 		s.LoadPlugin(slbClient, initImmediately)
 	}
+
+	//load gateway plugin
+	if s.AppConfig.GatewayFragment != nil {
+		// load gateway plugin
+		opts := gateway.Options{
+			Addr: ":" + s.AppConfig.GatewayFragment.Port,
+			RPCServer: gateway.Endpoint{
+				Network: s.AppConfig.GatewayFragment.RPCNetwork,
+				Addr:    s.AppConfig.GatewayFragment.RPCAddr,
+			},
+			OpenAPIDir: "examples/hello",
+			Handlers:   []gateway.ServiceHandler{},
+		}
+		// gateway
+		g := &gateway.Gateway{
+			Opts: opts,
+			Ctx:  s.Ctx.Context,
+		}
+		s.LoadPlugin(g, initImmediately)
+	}
+
 }
 
 func (s *Server) ListPlugins() []plugins.Plugin {
@@ -100,17 +123,27 @@ func (s *Server) RemovePlugin(pluginID string) error {
 	return nil
 }
 
-func (s *Server) Start(ctx *instance.InstanceCtx) error {
-	if ctx == nil || ctx.Config == nil {
+func (s *Server) Start() error {
+	if s.Ctx == nil || s.Ctx.Config == nil {
 		return errors.New("ctx or ctx.config is nil")
 	}
 	if s.Stat == instance.RUNNING {
 		return errors.New("server has been run already")
 	}
 
-	//todo 引入gateway作为入口
+	// init plugin
+	for i, v := range s.Plugins {
+		fmt.Printf("start: %d. PluginID:%s  Plugin-Name:%s \n", i, v.ID(), v.Name())
+		err := v.Init()
+		if err != nil {
+			return err
+		}
+	}
+
+	// admin 入口
 	http.HandleFunc("/", s.handler)
 	go http.ListenAndServe(":8000", nil)
+
 	//add instance
 	s.wg.Add(1)
 	return nil
@@ -139,8 +172,9 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (s *Server) Stop(ctx *instance.InstanceCtx) error {
+func (s *Server) Stop() error {
 	defer s.wg.Done()
+	fmt.Println("stop server:", s)
 	for _, plugin := range s.Plugins {
 		err := plugin.Destroy()
 		if err != nil {

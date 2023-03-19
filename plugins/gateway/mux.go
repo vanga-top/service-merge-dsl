@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"dsl/plugins/gateway/utils"
+	"fmt"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 	"net/http"
@@ -36,16 +37,30 @@ type ServeMux struct {
 	unescapingMode            UnescapingMode
 }
 
-func (s *ServeMux) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	//TODO implement me
-	panic("implement me")
+func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s1 := "muxServer_v1"
+	s2 := "now"
+	fmt.Fprintf(w, "mux: "+s1+"\r\n register time:"+s2+"\r\n")
 }
 
 type ServeMuxOption func(mux *ServeMux)
 
+// todo
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
-	
-	return nil
+	serveMux := &ServeMux{
+		handlers:                  make(map[string][]handler),
+		forwardResponseOptions:    make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
+		marshalers:                marshalerRegistry{},
+		incomingHeaderMatcher:     nil,
+		outgoingHeaderMatcher:     nil,
+		metadataAnnotators:        nil,
+		errorHandler:              nil,
+		streamErrorHandler:        nil,
+		routingErrorHandler:       nil,
+		disablePathLengthFallback: false,
+		unescapingMode:            0,
+	}
+	return serveMux
 }
 
 type handler struct {

@@ -34,12 +34,12 @@ func trapSignalsPosix() {
 			switch sig {
 			case syscall.SIGQUIT:
 				fmt.Println("[INFO] SIGQUIT: Quitting process immediately")
-				serverInstance.Stop(nil)
+				serverInstance.Stop()
 				os.Exit(0)
 			case syscall.SIGTERM:
 				fmt.Println("[INFO] SIGTERM: Shutting down servers then terminating")
 				exitCode := 3
-				err := serverInstance.Stop(nil)
+				err := serverInstance.Stop()
 				if err != nil {
 					fmt.Printf("[ERROR] SIGTERM stop: %v", err)
 					exitCode = 3

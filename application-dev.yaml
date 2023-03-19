@@ -10,5 +10,8 @@ slb:
 log:
   level: debug
   path: /usr/local/dsl/dev.log
-remote:
-  host: http://127.0.0.1
+gateway:
+  port: 8787
+  rpc-network: tcp
+  rpc-addr: localhost:8080
+  path: /usr/local/dsl/gateway.conf ## 注册http 到 grpc的配置文件

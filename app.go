@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"dsl/api/config"
 	"dsl/instance"
 	"dsl/instance/httpserver"
@@ -24,13 +25,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	serverInstance, err := httpserver.NewServer(appConfig)
-	ctx := &instance.InstanceCtx{Config: &instance.Config{Env: "DEV"}}
-	serverInstance.Start(ctx)
+	ctx := &instance.InstanceCtx{Config: &instance.Config{Env: "DEV"}, Context: context.Background()}
+	serverInstance, err = httpserver.NewServer(appConfig, ctx, false)
+	serverInstance.Start()
 	fmt.Println("start server...")
 	serverInstance.ListPlugins()
-	//todo add signal discovery
-
-	//
 	serverInstance.Wait()
 }

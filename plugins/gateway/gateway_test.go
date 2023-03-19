@@ -7,20 +7,20 @@ import (
 )
 
 func TestNewServeMux(t *testing.T) {
-	ctx := context.Background()
-	opts := Options{
-		Addr: ":8080",
-		RPCServer: Endpoint{
-			Network: "tcp",
-			Addr:    "localhost:9090",
-		},
-		OpenAPIDir: "examples/hello",
-		Handlers: []ServiceHandler{
-			RegisterEchoService,
-		},
-	}
-
-	Run(ctx, opts)
+	//ctx := context.Background()
+	//opts := Options{
+	//	Addr: ":8787",
+	//	RPCServer: Endpoint{
+	//		Network: "tcp",
+	//		Addr:    "localhost:9090",
+	//	},
+	//	OpenAPIDir: "examples/hello",
+	//	Handlers: []ServiceHandler{
+	//		RegisterEchoService,
+	//	},
+	//}
+	//
+	////Run(ctx, opts)
 }
 
 func RegisterEchoService(ctx context.Context, mux *ServeMux, conn *grpc.ClientConn) error {

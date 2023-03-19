@@ -42,7 +42,7 @@ func trapSignalsCrossPlatform() {
 		for i := 0; true; i++ {
 			<-shutdown
 			fmt.Println("[INFO] SIGINT: Shutting down")
-			//serverInstance.Stop(nil)
+			serverInstance.Stop()
 		}
 	}()
 }
