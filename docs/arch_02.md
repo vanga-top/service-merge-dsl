@@ -67,13 +67,13 @@ http request（URI） --> gateway (router 1URI to 1DSL service) --> dsl call rem
 ```
      "get|post"  /v1/echo/$message {
        option(rpc) = {
-          EchoService($message) returns ($SimpleMessage)
+          EchoService($message) return ($SimpleMessage)
        },
        option(dsl) = {
           remote($result)   appName#serviceName#method($message.id);
           remote($result1)  appName#serviceName#method($message.value);
-          dsl(($result,$result1)=>{
-               $SimpleMessage:{
+          dsl(($result,$result1) => {
+               return $SimpleMessage:{
                   "id": $result.id,
                   "name": $result1.name
                }
@@ -81,3 +81,5 @@ http request（URI） --> gateway (router 1URI to 1DSL service) --> dsl call rem
        }
     }
 ```
+
+
