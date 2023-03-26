@@ -7,7 +7,9 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 	"net/http"
+	"net/textproto"
 	"regexp"
+	"strings"
 )
 
 type UnescapingMode int
@@ -48,19 +50,34 @@ type ServeMuxOption func(mux *ServeMux)
 // todo
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
-		handlers:                  make(map[string][]handler),
-		forwardResponseOptions:    make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
-		marshalers:                marshalerRegistry{},
-		incomingHeaderMatcher:     nil,
-		outgoingHeaderMatcher:     nil,
-		metadataAnnotators:        nil,
-		errorHandler:              nil,
-		streamErrorHandler:        nil,
-		routingErrorHandler:       nil,
-		disablePathLengthFallback: false,
-		unescapingMode:            0,
+		handlers:               make(map[string][]handler),
+		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
+		marshalers:             makeMarshalerMIMERegistry(),
+		errorHandler:           nil,
+		streamErrorHandler:     nil,
+		routingErrorHandler:    nil,
+		unescapingMode:         UnescapingModeDefault,
 	}
+
+	for _, opt := range opts {
+		opt(serveMux)
+	}
+
+	if serveMux.incomingHeaderMatcher == nil {
+
+	}
+
 	return serveMux
+}
+
+func DefaultHeaderMatcher(key string) (string, bool) {
+	switch key = textproto.CanonicalMIMEHeaderKey(key); {
+	case isPermanentHTTPHeader(key):
+		return MetadataPrefix + key, true
+	case strings.HasPrefix(key, MetadataHeaderPrefix):
+		return key[len(MetadataHeaderPrefix):], true
+	}
+	return "", false
 }
 
 type handler struct {

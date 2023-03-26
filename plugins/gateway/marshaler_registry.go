@@ -36,3 +36,11 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 	m.mimeMap[mime] = marshaler
 	return nil
 }
+
+func makeMarshalerMIMERegistry() marshalerRegistry {
+	return marshalerRegistry{
+		mimeMap: map[string]Marshaler{
+			MIMEWildcard: defaultMarshaler,
+		},
+	}
+}
