@@ -39,12 +39,6 @@ type ServeMux struct {
 	unescapingMode            UnescapingMode
 }
 
-func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s1 := "muxServer_v1"
-	s2 := "now"
-	fmt.Fprintf(w, "mux: "+s1+"\r\n register time:"+s2+"\r\n")
-}
-
 type ServeMuxOption func(mux *ServeMux)
 
 // todo
@@ -64,10 +58,26 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	}
 
 	if serveMux.incomingHeaderMatcher == nil {
-
+		serveMux.incomingHeaderMatcher = DefaultHeaderMatcher
 	}
 
+	if serveMux.outgoingHeaderMatcher == nil {
+		serveMux.outgoingHeaderMatcher = func(key string) (string, bool) {
+			return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
+		}
+	}
 	return serveMux
+}
+
+// todo add plugin service pipeline
+func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s1 := "muxServer_v1"
+	s2 := "now"
+	fmt.Fprintf(w, "mux: "+s1+"\r\n register time:"+s2+"\r\n")
+}
+
+func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
+	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
 }
 
 func DefaultHeaderMatcher(key string) (string, bool) {
