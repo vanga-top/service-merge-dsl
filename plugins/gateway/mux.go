@@ -41,7 +41,6 @@ type ServeMux struct {
 
 type ServeMuxOption func(mux *ServeMux)
 
-// todo
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
